@@ -1,0 +1,102 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 20px;
+    padding: 0;
+    color: #A55592;
+    line-height: 1.3;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow-x: hidden; /* Evita rolagem horizontal */
+}
+
+.container {
+    text-align: center;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 100%; /* Assegura que a largura da container não ultrapasse a tela */
+    overflow-y: auto; /* Permite rolagem vertical */
+}
+.lista{
+    text-align: left;
+}
+
+h1 {
+    color: #A55592;
+    margin-bottom: 10px;
+}
+
+p {
+    color: #A55592;
+    margin-bottom: 20px;
+}
+
+button {
+    padding: 10px 20px;
+    margin: 10px;
+    border: none;
+    background-color: #A55592;
+    color: #fff;
+    font-size: 16px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+button:hover{
+    background-color: #dcbcd5; /* Green */
+    color: black;
+}
+
+button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+#resultados {
+    margin-top: 20px;
+    text-align: left;
+    max-height: 200px; /* Limita a altura dos resultados com rolagem vertical */
+    overflow-y: auto;
+    white-space: nowrap; /* Impede a quebra de linha */
+}
+
+.jogo {
+    margin-bottom: 10px;
+}
+
+.jogo-label {
+    font-weight: bold;
+    display: inline-block;
+    width: 100px; /* Garante que o label ocupe uma largura fixa */
+}
+
+.adicionado {
+    color: red;
+    font-weight: bold;
+}
+
+.export-buttons {
+    margin-top: 20px;
+}
+
+@media (max-width: 600px) {
+    body {
+        padding: 10px;
+    }
+
+    .container {
+        padding: 15px;
+    }
+
+    button {
+        padding: 8px 15px;
+        font-size: 14px;
+    }
+
+    .jogo-label {
+        width: auto;
+    }
+}

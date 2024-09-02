@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estratégia das 14 Dezenas</title>
+    <link rel="stylesheet" href="./css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Estratégia das 14 Dezenas - LOTOFÁCIL</h1>
+        <p>Nesta estratégia, ao clicar no botão <b>GERAR JOGOS</b>, serão gerados 11 jogos com 14 dezenas cada.</p>
+        <p>Ao clicar em <b>COMPLETAR JOGOS</b>, o sistema completará os 11 jogos de 14 dezenas cada com as 11 dezenas que faltaram.</p>
+
+        <ul class="lista">
+            <li>A cada clique em <b>GERAR JOGOS</b>,11 jogos diferentes serão gerados.</li>
+            <li>Salve em *.xlsx ou exporte para *.txt</li>
+        </ul>
+        
+        <button id="gerarJogos">GERAR JOGOS</button>
+        <button id="completarJogos" disabled>COMPLETAR JOGOS</button>
+
+        <div id="resultados">
+            <!-- Jogos Gerados Aparecerão Aqui -->
+        </div>
+
+        <!-- Botões para exportação -->
+        <div class="export-buttons">
+            <button id="exportarExcel" disabled>Exportar para Excel</button>
+            <button id="exportarTxt" disabled>Exportar para TXT</button>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="./js/script.js"></script>
+</body>
+</html>
