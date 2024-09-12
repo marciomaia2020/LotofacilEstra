@@ -1,147 +1,113 @@
-let jogos = [];
 const totalNumeros = 25;
-const totalDezenas = 14;
-let jogosCompletados = false; // Variável para rastrear se os jogos foram completados
+const totalJogos = 4;
+let jogos = [];
 
 document.getElementById('gerarJogos').addEventListener('click', gerarJogos);
-document.getElementById('completarJogos').addEventListener('click', completarJogos);
-document.getElementById('exportarExcel').addEventListener('click', exportarParaExcel);
-document.getElementById('exportarTxt').addEventListener('click', exportarParaTXT);
 
 function gerarJogos() {
+    const fixas = document.getElementById('fixas').value.split(',').map(Number).filter(n => n > 0 && n <= totalNumeros);
+    const excluir = parseInt(document.getElementById('excluir').value);
+
+    // Validação
+    if (fixas.length !== 12) {
+        alert('Escolha exatamente 12 dezenas fixas.');
+        return;
+    }
+    if (fixas.includes(excluir)) {
+        alert('A dezena a excluir não pode estar entre as fixas.');
+        return;
+    }
+
+    // Geração dos números restantes
+    const numerosRestantes = Array.from({ length: totalNumeros }, (_, i) => i + 1).filter(n => !fixas.includes(n) && n !== excluir);
+
+    // Dividir números restantes em 4 grupos de 3
+    const grupos = [];
+    for (let i = 0; i < 4; i++) {
+        grupos.push(numerosRestantes.splice(0, 3));
+    }
+
+    // Gerar 4 jogos com 12 fixas + 3 dezenas de cada grupo
     jogos = [];
-    jogosCompletados = false; // Resetar o estado de conclusão
-
-    // Gerar uma base de 14 dezenas
-    const numerosDisponiveis = Array.from({length: totalNumeros}, (_, i) => i + 1);
-    const baseJogo = [];
-    while (baseJogo.length < totalDezenas) {
-        const indexAleatorio = Math.floor(Math.random() * numerosDisponiveis.length);
-        const numero = numerosDisponiveis.splice(indexAleatorio, 1)[0];
-        baseJogo.push(numero);
-    }
-    baseJogo.sort((a, b) => a - b);
-
-    // Criar 11 jogos idênticos com as 14 dezenas
-    for (let i = 0; i < 11; i++) {
-        jogos.push([...baseJogo]);
+    for (let i = 0; i < totalJogos; i++) {
+        const jogo = [...fixas, ...grupos[i]];
+        jogos.push(jogo.sort((a, b) => a - b)); // Organizar em ordem crescente
     }
 
-    mostrarJogos(jogos);
-    document.getElementById('completarJogos').disabled = false;
-    document.getElementById('exportarExcel').disabled = true;
-    document.getElementById('exportarTxt').disabled = true;
-}
-
-function completarJogos() {
-    const todosNumeros = Array.from({length: totalNumeros}, (_, i) => i + 1);
-
-    // Identificar os números que faltam para completar os 25 números
-    const numerosFaltando = todosNumeros.filter(num => !jogos[0].includes(num));
-
-    // Completar cada jogo com um dos números que faltam e marcar como adicionado
-    jogos.forEach((jogo, index) => {
-        const numeroAdicionado = numerosFaltando[index];
-        jogo.push(numeroAdicionado);
-        jogo.sort((a, b) => a - b);
-        jogo[jogo.indexOf(numeroAdicionado)] = { numero: numeroAdicionado, adicionado: true }; // Marcar número adicionado
-    });
-
-    mostrarJogos(jogos);
-    jogosCompletados = true; // Marcar os jogos como completados
+    mostrarJogos();
     document.getElementById('exportarExcel').disabled = false;
     document.getElementById('exportarTxt').disabled = false;
 }
 
-function mostrarJogos(jogos) {
+function mostrarJogos() {
     const resultadosDiv = document.getElementById('resultados');
     resultadosDiv.innerHTML = '';
 
     jogos.forEach((jogo, index) => {
         const jogoDiv = document.createElement('div');
         jogoDiv.className = 'jogo';
-        
-        // Adicionar o rótulo do jogo
-        const jogoLabel = document.createElement('div');
-        jogoLabel.className = 'jogo-label';
-        jogoLabel.textContent = `Jogo ${index + 1}:`;
-        jogoDiv.appendChild(jogoLabel);
-        
-        // Gerar a string do jogo com a classe CSS para o número adicionado
-        const jogoStr = jogo.map(item => {
-            if (typeof item === 'object' && item.adicionado) {
-                return `<span class="adicionado">${item.numero}</span>`;
-            }
-            return item;
-        }).join(', ');
-
-        jogoDiv.innerHTML += jogoStr;
+        jogoDiv.textContent = `Jogo ${index + 1}: ${jogo.join(', ')}`;
         resultadosDiv.appendChild(jogoDiv);
     });
 }
 
+document.getElementById('exportarExcel').addEventListener('click', exportarParaExcel);
+document.getElementById('exportarTxt').addEventListener('click', exportarParaTXT);
+
 function exportarParaExcel() {
-    if (!jogosCompletados) {
-        alert('Você deve completar os jogos antes de exportar para Excel.');
-        return;
-    }
-
     const wb = XLSX.utils.book_new();
-    
-    // Adiciona o cabeçalho
-    const header = ['Jogo', ...Array(totalDezenas).fill(null).map((_, i) => `Número ${String(i + 1).padStart(2, '0')}`)];
-    
-    // Adiciona o 15º número ao cabeçalho se o totalDezenas for 14
-    if (totalDezenas < 15) {
-        header.push('Número 15');
-    }
-
-    // Adiciona os jogos
-    const data = jogos.map((jogo, index) => {
-        const jogoArray = [
-            `Jogo ${index + 1}`,
-            ...jogo.map(item => typeof item === 'object' ? item.numero : item)
-        ];
-
-        // Preenche com células vazias se necessário para o 15º número
-        while (jogoArray.length < header.length) {
-            jogoArray.push('');
-        }
-
-        return jogoArray;
-    });
-
-    // Junta o cabeçalho e os dados
-    const sheetData = [header, ...data];
-
-    // Cria a planilha e a adiciona ao livro
-    const ws = XLSX.utils.aoa_to_sheet(sheetData);
+    const ws_data = [['Jogo', 'Dezenas']];
+    jogos.forEach((jogo, index) => ws_data.push([`Jogo ${index + 1}`, jogo.join(', ')]));
+    const ws = XLSX.utils.aoa_to_sheet(ws_data);
     XLSX.utils.book_append_sheet(wb, ws, 'Jogos');
-    
-    // Salva o arquivo
     XLSX.writeFile(wb, 'jogos_lotofacil.xlsx');
 }
 
 function exportarParaTXT() {
-    if (!jogosCompletados) {
-        alert('Você deve completar os jogos antes de exportar para TXT.');
-        return;
-    }
-
-    // Gera o conteúdo para o arquivo TXT sem rótulo e com espaços simples entre os números
-    const texto = jogos.map(jogo => 
-        jogo.map(item => typeof item === 'object' ? item.numero : item).join(' ')
-    ).join('\n');
-
-    // Cria o blob e o URL para o download
+    const texto = jogos.map(jogo => jogo.join(' ')).join('\n');
     const blob = new Blob([texto], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
     a.download = 'jogos_lotofacil.txt';
-    
-    // Aciona o download
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
+}
+document.getElementById('gerarJogos').addEventListener('click', function() {
+    const dezenasFixasInput = document.getElementById('dezenasFixas').value;
+    const dezenaExcluir = parseInt(document.getElementById('dezenaExcluir').value);
+
+    // Converte a string de dezenas fixas em um array de números
+    const dezenasFixas = dezenasFixasInput.split(',').map(num => parseInt(num.trim()));
+
+    // Valida se foram inseridas exatamente 12 dezenas
+    if (dezenasFixas.length !== 12) {
+        alert("Você deve inserir exatamente 12 dezenas.");
+        return;
+    }
+
+    // Valida se todos os números são válidos (entre 1 e 25)
+    if (dezenasFixas.some(num => isNaN(num) || num < 1 || num > 25)) {
+        alert("Insira apenas números entre 1 e 25.");
+        return;
+    }
+
+    // Valida se a dezena a excluir está entre as fixas
+    if (dezenasFixas.includes(dezenaExcluir)) {
+        alert("A dezena a excluir não pode estar entre as dezenas fixas.");
+        return;
+    }
+
+    // Chama a função para gerar os jogos
+    gerarJogos(dezenasFixas, dezenaExcluir);
+});
+
+function gerarJogos(dezenasFixas, dezenaExcluir) {
+    // Lógica de geração de jogos aqui
+    console.log("Dezenas fixas:", dezenasFixas);
+    console.log("Dezena a excluir:", dezenaExcluir);
+
+    // Exemplo: exibir jogos gerados
+    document.getElementById('resultados').innerText = "Jogos gerados com sucesso!";
 }

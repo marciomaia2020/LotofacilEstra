@@ -3,35 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Estratégia das 14 Dezenas</title>
+    <title>Gerador de Jogos - 12 Dezenas Fixas</title>
     <link rel="stylesheet" href="./css/styles.css">
 </head>
 <body>
     <div class="container">
-        <h1>Estratégia das 14 Dezenas - LOTOFÁCIL</h1>
-        <p>Nesta estratégia, ao clicar no botão <b>GERAR JOGOS</b>, serão gerados 11 jogos com 14 dezenas cada.</p>
-        <p>Ao clicar em <b>COMPLETAR JOGOS</b>, o sistema completará os 11 jogos de 14 dezenas cada com as 11 dezenas que faltaram.</p>
-
-        <ul class="lista">
-            <li>A cada clique em <b>GERAR JOGOS</b>,11 jogos diferentes serão gerados.</li>
-            <li>Salve em *.xlsx ou exporte para *.txt</li>
-        </ul>
+        <h1>Estratégia das 12 Fixas - LOTOFÁCIL</h1>
+        <p>Selecione 12 dezenas para fixar e 1 dezena para excluir. O sistema gerará 4 jogos com 15 dezenas, organizando as dezenas restantes em grupos de 3.</p>
         
-        <button id="gerarJogos">GERAR JOGOS</button>
-        <button id="completarJogos" disabled>COMPLETAR JOGOS</button>
+
+
+        <form id="formJogo">
+            <label for="dezenasFixas">Digite exatamente 12 dezenas fixas (separadas por vírgulas):</label>
+            <input type="text" id="dezenasFixas" name="dezenasFixas" placeholder="Ex: 1, 2, 3, ..., 12" required>
+
+            <label for="dezenaExcluir">Digite a dezena a ser excluída:</label>
+            <input type="number" id="dezenaExcluir" name="dezenaExcluir" min="1" max="25" required>
+
+            <button type="button" id="gerarJogos">Gerar Jogos</button>
+        </form>
 
         <div id="resultados">
-            <!-- Jogos Gerados Aparecerão Aqui -->
-        </div>
-
-        <!-- Botões para exportação -->
-        <div class="export-buttons">
-            <button id="exportarExcel" disabled>Exportar para Excel</button>
-            <button id="exportarTxt" disabled>Exportar para TXT</button>
+            <!-- Resultados dos jogos gerados aparecerão aqui -->
         </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="./js/script.js"></script>
 </body>
 </html>
